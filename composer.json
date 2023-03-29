@@ -1,0 +1,11 @@
+{
+	"name": "digitpepper/php-view",
+	"description": "A php view",
+	"require": {
+		"php": ">=7.4"
+	},
+	"license": "MIT",
+	"autoload": {
+		"psr-4": {"DP\\": "src/"}
+	}
+}
