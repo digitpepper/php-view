@@ -23,6 +23,9 @@ class View
 
 	public static function construct(): void
 	{
+		if (self::$is_constructed) {
+			return;
+		}
 		$app_path = '';
 		if (defined('APP_PATH')) {
 			$app_path = APP_PATH;
@@ -39,9 +42,7 @@ class View
 	 */
 	public static function render_partial(string $view, array $data = [], bool $return = false)
 	{
-		if (!self::$is_constructed) {
-			self::construct();
-		}
+		self::construct();
 		extract($data, EXTR_SKIP);
 		ob_start();
 		require self::$view_path . "/{$view}.php";
