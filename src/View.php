@@ -86,7 +86,7 @@ class View
 				}
 				$html .= '<script src="' . htmlspecialchars($src, ENT_QUOTES) . '"' . $attr . '></script>' . "\r\n";
 			}
-			if ($content) {
+			if ($html && $content) {
 				$content = str_replace(self::$inject_resource_placeholder, $html, $content);
 			}
 		}
