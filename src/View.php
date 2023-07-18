@@ -22,11 +22,6 @@ class View
 	public static $view_path = null;
 
 	/**
-	 * @var string
-	 */
-	public static $inject_resource_placeholder = '<!-- inject_resource -->';
-
-	/**
 	 * @var array <string, array<string>>
 	 */
 	public static $css_list = [];
@@ -62,34 +57,6 @@ class View
 		ob_start();
 		require self::$view_path . "/{$view}.php";
 		$content = ob_get_clean();
-		if ($view === self::$layout) {
-			$html = '';
-			foreach (self::$css_list as $href => $attributes) {
-				$attr = '';
-				foreach ($attributes as $key => $value) {
-					$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES) . '="' . htmlspecialchars((string)$value, ENT_QUOTES) . '"';
-				}
-				$html .= '<link href="' . htmlspecialchars($href, ENT_QUOTES) . '"' . $attr . ' />' . "\r\n";
-			}
-			foreach (self::$js_list as $src => $attributes) {
-				$attr = '';
-				foreach ($attributes as $key => $value) {
-					if (is_int($key)) {
-						$attr .= ' ' . htmlspecialchars((string)$value, ENT_QUOTES);
-					} else if (is_bool($value)) {
-						if ($value) {
-							$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES);
-						}
-					} else {
-						$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES) . '="' . htmlspecialchars((string)$value, ENT_QUOTES) . '"';
-					}
-				}
-				$html .= '<script src="' . htmlspecialchars($src, ENT_QUOTES) . '"' . $attr . '></script>' . "\r\n";
-			}
-			if ($html && $content) {
-				$content = str_replace(self::$inject_resource_placeholder, $html, $content);
-			}
-		}
 		if ($return) {
 			return $content;
 		} else {
@@ -114,7 +81,7 @@ class View
 	 * @param string $href
 	 * @param array <string, string> $attributes
 	 */
-	public static function inject_css(string $href, array $attributes = []): void
+	public static function enqueue_style(string $href, array $attributes = []): void
 	{
 		$attributes = array_merge([
 			'rel' => 'stylesheet',
@@ -126,8 +93,42 @@ class View
 	 * @param string $src
 	 * @param array <string|int, bool|string> $attributes
 	 */
-	public static function inject_js(string $src, array $attributes = []): void
+	public static function enqueue_script(string $src, array $attributes = []): void
 	{
 		self::$js_list[$src] = $attributes;
+	}
+
+	public static function load_style(): void
+	{
+		$html = '';
+		foreach (self::$css_list as $href => $attributes) {
+			$attr = '';
+			foreach ($attributes as $key => $value) {
+				$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES) . '="' . htmlspecialchars((string)$value, ENT_QUOTES) . '"';
+			}
+			$html .= '<link href="' . htmlspecialchars($href, ENT_QUOTES) . '"' . $attr . ' />' . "\r\n";
+		}
+		echo $html;
+	}
+
+	public static function load_script(): void
+	{
+		$html = '';
+		foreach (self::$js_list as $src => $attributes) {
+			$attr = '';
+			foreach ($attributes as $key => $value) {
+				if (is_int($key)) {
+					$attr .= ' ' . htmlspecialchars((string)$value, ENT_QUOTES);
+				} else if (is_bool($value)) {
+					if ($value) {
+						$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES);
+					}
+				} else {
+					$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES) . '="' . htmlspecialchars((string)$value, ENT_QUOTES) . '"';
+				}
+			}
+			$html .= '<script src="' . htmlspecialchars($src, ENT_QUOTES) . '"' . $attr . '></script>' . "\r\n";
+		}
+		echo $html;
 	}
 }
