@@ -37,7 +37,7 @@ class View
 			return;
 		}
 		$app_path = '';
-		if (defined('APP_PATH')) {
+		if (\defined('APP_PATH')) {
 			$app_path = APP_PATH;
 		}
 		self::$view_path = $app_path . '/protected/views';
@@ -53,10 +53,10 @@ class View
 	public static function render_partial(string $view, array $data = [], bool $return = false)
 	{
 		self::construct();
-		extract($data, EXTR_SKIP);
-		ob_start();
+		\extract($data, \EXTR_SKIP);
+		\ob_start();
 		require self::$view_path . "/{$view}.php";
-		$content = ob_get_clean();
+		$content = \ob_get_clean();
 		if ($return) {
 			return $content;
 		} else {
@@ -83,7 +83,7 @@ class View
 	 */
 	public static function enqueue_style(string $href, array $attributes = []): void
 	{
-		$attributes = array_merge([
+		$attributes = \array_merge([
 			'rel' => 'stylesheet',
 		], $attributes);
 		self::$css_list[$href] = $attributes;
@@ -104,9 +104,9 @@ class View
 		foreach (self::$css_list as $href => $attributes) {
 			$attr = '';
 			foreach ($attributes as $key => $value) {
-				$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES) . '="' . htmlspecialchars((string)$value, ENT_QUOTES) . '"';
+				$attr .= ' ' . \htmlspecialchars((string)$key, \ENT_QUOTES) . '="' . \htmlspecialchars((string)$value, \ENT_QUOTES) . '"';
 			}
-			$html .= '<link href="' . htmlspecialchars($href, ENT_QUOTES) . '"' . $attr . ' />' . "\r\n";
+			$html .= '<link href="' . \htmlspecialchars($href, \ENT_QUOTES) . '"' . $attr . ' />' . "\r\n";
 		}
 		echo $html;
 	}
@@ -117,17 +117,17 @@ class View
 		foreach (self::$js_list as $src => $attributes) {
 			$attr = '';
 			foreach ($attributes as $key => $value) {
-				if (is_int($key)) {
-					$attr .= ' ' . htmlspecialchars((string)$value, ENT_QUOTES);
-				} else if (is_bool($value)) {
+				if (\is_int($key)) {
+					$attr .= ' ' . \htmlspecialchars((string)$value, \ENT_QUOTES);
+				} else if (\is_bool($value)) {
 					if ($value) {
-						$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES);
+						$attr .= ' ' . \htmlspecialchars((string)$key, \ENT_QUOTES);
 					}
 				} else {
-					$attr .= ' ' . htmlspecialchars((string)$key, ENT_QUOTES) . '="' . htmlspecialchars((string)$value, ENT_QUOTES) . '"';
+					$attr .= ' ' . \htmlspecialchars((string)$key, \ENT_QUOTES) . '="' . \htmlspecialchars((string)$value, \ENT_QUOTES) . '"';
 				}
 			}
-			$html .= '<script src="' . htmlspecialchars($src, ENT_QUOTES) . '"' . $attr . '></script>' . "\r\n";
+			$html .= '<script src="' . \htmlspecialchars($src, \ENT_QUOTES) . '"' . $attr . '></script>' . "\r\n";
 		}
 		echo $html;
 	}
