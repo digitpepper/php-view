@@ -54,9 +54,15 @@ class View
 	public static function render_partial(string $view, array $data = [], bool $return = \false)
 	{
 		self::construct();
-		\extract($data, \EXTR_SKIP);
-		\ob_start();
-		require self::$view_path . "/{$view}.php";
+		(function ($__view__, $__data__) {
+			$GLOBALS['__view__'] = $__view__;
+			\extract($__data__, \EXTR_SKIP);
+			unset($__view__);
+			unset($__data__);
+			\ob_start();
+			require self::$view_path . "/{$GLOBALS['__view__']}.php";
+			unset($GLOBALS['__view__']);
+		})($view, $data);
 		$content = \ob_get_clean();
 		if ($return) {
 			return $content;
