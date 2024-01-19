@@ -9,7 +9,7 @@ class View
 	/**
 	 * @var bool
 	 */
-	public static $is_constructed = false;
+	public static $is_constructed = \false;
 
 	/**
 	 * @var string
@@ -19,7 +19,7 @@ class View
 	/**
 	 * @var string
 	 */
-	public static $view_path = null;
+	public static $view_path = \null;
 
 	/**
 	 * @var array <string, array<string>>
@@ -37,11 +37,12 @@ class View
 			return;
 		}
 		$app_path = '';
-		if (\defined('APP_PATH')) {
-			$app_path = APP_PATH;
+		if (\defined('\APP_PATH')) {
+			/* @phpstan-ignore-next-line */
+			$app_path = \APP_PATH;
 		}
 		self::$view_path = $app_path . '/protected/views';
-		self::$is_constructed = true;
+		self::$is_constructed = \true;
 	}
 
 	/**
@@ -50,7 +51,7 @@ class View
 	 * @param bool $return
 	 * @return string|false|void
 	 */
-	public static function render_partial(string $view, array $data = [], bool $return = false)
+	public static function render_partial(string $view, array $data = [], bool $return = \false)
 	{
 		self::construct();
 		\extract($data, \EXTR_SKIP);
@@ -70,9 +71,9 @@ class View
 	 * @param bool $return
 	 * @return string|false|void
 	 */
-	public static function render(string $view, array $data = [], bool $return = false)
+	public static function render(string $view, array $data = [], bool $return = \false)
 	{
-		$content = self::render_partial($view, $data, true);
+		$content = self::render_partial($view, $data, \true);
 		$data['content'] = $content;
 		return self::render_partial(self::$layout, $data, $return);
 	}
